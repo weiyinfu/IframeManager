@@ -5,8 +5,8 @@
     <split-pane :min-percent="10" :default-percent="20" split="vertical">
       <template v-slot:paneL>
         <div class="left">
-          <h1>我的作品</h1>
-          <div v-for="work in works" :key="work.name" @click="clickItem(work)" class="work">
+          <h1>{{ works.title }}</h1>
+          <div v-for="work in works.pages" :key="work.name" @click="clickItem(work)" class="work">
             <img :src="work.img" style="padding-right: 5px">
             <span>{{ work.name }}</span>
           </div>
@@ -20,7 +20,7 @@
 </template>
 <script>
 import splitPane from "vue3-splitpane";
-import { works } from "./work.ts";
+import works from "../assets/我在晚清搞洋务.json";
 
 export default {
   components: {
@@ -32,7 +32,7 @@ export default {
     }
   },
   mounted() {
-    this.clickItem(this.works[0]);
+    this.clickItem(this.works.pages[0]);
   },
   methods: {
     clickItem(item) {

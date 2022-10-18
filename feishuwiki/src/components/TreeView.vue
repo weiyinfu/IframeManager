@@ -8,7 +8,7 @@
             <template #default="{ node, data }">
               <div class="custom-tree-node">
                 <span>{{ node.label }}</span>
-                <span class="operation">
+                <span class="operation" v-if="book.editable">
                   <el-popover title="操作" :width="200" trigger="hover">
                     <template #reference>
                       More
@@ -32,7 +32,7 @@
   <el-dialog v-model="editDialog.visible" title="编辑">
     <el-form :model="editDialog">
       <el-form-item label="标题" label-width="140px">
-        <el-input v-model="editDialog.name" autocomplete="off" />
+        <el-input v-model="editDialog.name" autocomplete="off"/>
       </el-form-item>
       <el-form-item label="URL" label-width="140px">
         <el-input v-model="editDialog.url"></el-input>
@@ -50,7 +50,7 @@
   <el-dialog v-model="addDialog.visible" title="新增">
     <el-form :model="addDialog">
       <el-form-item label="标题" label-width="140px">
-        <el-input v-model="addDialog.name" autocomplete="off" />
+        <el-input v-model="addDialog.name" autocomplete="off"/>
       </el-form-item>
       <el-form-item label="URL" label-width="140px">
         <el-input v-model="addDialog.url"></el-input>
@@ -66,17 +66,20 @@
 </template>
 <script setup lang="ts">
 import type Node from 'element-plus/es/components/tree/src/model/node';
-import { onMounted, reactive, ref } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import {onMounted, reactive, ref} from "vue";
+import {useRoute, useRouter} from "vue-router";
 import SplitPane from "vue3-splitpane";
-import feishu from "./feishu";
+import feishu from "../assets/feishu.json";
+
 const components = [SplitPane];
+
 interface TreeNode {
   id: number
   label: string
   children?: TreeNode[]
   url?: string
 }
+
 const route = useRoute();
 const router = useRouter();
 const view = ref(null);
@@ -84,25 +87,29 @@ const editDialog = reactive({
   name: '',
   url: '',
   visible: false,
-  onConfirm: () => { },
+  onConfirm: () => {
+  },
 })
 const book = reactive({
   title: '我的书籍',
   content: feishu,
+  editable: false,
 })
 const addDialog = reactive({
   name: '',
   url: '',
   visible: false,
-  onConfirm: () => { }
+  onConfirm: () => {
+  }
 })
 let id = 10000;
+
 function append(data: TreeNode) {
   addDialog.visible = true;
   addDialog.name = '';
   addDialog.url = '';
   addDialog.onConfirm = () => {
-    const newChild = { id: addDialog.url, url: addDialog.url, label: addDialog.name }
+    const newChild = {id: addDialog.url, url: addDialog.url, label: addDialog.name}
     if (!data.children) {
       data.children = []
     }
@@ -112,6 +119,7 @@ function append(data: TreeNode) {
   }
 
 }
+
 function edit(node: Node, data: TreeNode) {
   editDialog.visible = true;
   editDialog.name = data.label;
@@ -122,6 +130,7 @@ function edit(node: Node, data: TreeNode) {
     editDialog.visible = false;
   }
 }
+
 const remove = (node: Node, data: TreeNode) => {
   const parent = node.parent
   const children: TreeNode[] = parent.data.children || parent.data
@@ -129,9 +138,11 @@ const remove = (node: Node, data: TreeNode) => {
   children.splice(index, 1)
   book.content = [...book.content]
 }
+
 function handleDragEnd() {
   console.log("drag end")
 }
+
 onMounted(() => {
   console.log(view);
   console.log(location)
@@ -145,7 +156,7 @@ const clickNode = (node: TreeNode) => {
   console.log(view);
   if (node.url) {
     view._value.src = node.url;
-    router.push({ path: route.path, query: { url: node.url } })
+    router.push({path: route.path, query: {url: node.url}})
     console.log(route.query)
   }
 }
