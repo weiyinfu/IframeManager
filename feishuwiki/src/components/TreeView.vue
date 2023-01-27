@@ -32,7 +32,7 @@
   <el-dialog v-model="editDialog.visible" title="编辑">
     <el-form :model="editDialog">
       <el-form-item label="标题" label-width="140px">
-        <el-input v-model="editDialog.name" autocomplete="off"/>
+        <el-input v-model="editDialog.name" autocomplete="off" />
       </el-form-item>
       <el-form-item label="URL" label-width="140px">
         <el-input v-model="editDialog.url"></el-input>
@@ -50,7 +50,7 @@
   <el-dialog v-model="addDialog.visible" title="新增">
     <el-form :model="addDialog">
       <el-form-item label="标题" label-width="140px">
-        <el-input v-model="addDialog.name" autocomplete="off"/>
+        <el-input v-model="addDialog.name" autocomplete="off" />
       </el-form-item>
       <el-form-item label="URL" label-width="140px">
         <el-input v-model="addDialog.url"></el-input>
@@ -66,11 +66,10 @@
 </template>
 <script setup lang="ts">
 import type Node from 'element-plus/es/components/tree/src/model/node';
-import {onMounted, reactive, ref} from "vue";
-import {useRoute, useRouter} from "vue-router";
+import { onMounted, reactive, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import SplitPane from "vue3-splitpane";
-import feishu from "../assets/feishu.json";
-
+import * as api from "../api";
 const components = [SplitPane];
 
 interface TreeNode {
@@ -91,8 +90,8 @@ const editDialog = reactive({
   },
 })
 const book = reactive({
-  title: '我的书籍',
-  content: feishu,
+  title: '',
+  content: [],
   editable: false,
 })
 const addDialog = reactive({
@@ -109,7 +108,7 @@ function append(data: TreeNode) {
   addDialog.name = '';
   addDialog.url = '';
   addDialog.onConfirm = () => {
-    const newChild = {id: addDialog.url, url: addDialog.url, label: addDialog.name}
+    const newChild = { id: addDialog.url, url: addDialog.url, label: addDialog.name }
     if (!data.children) {
       data.children = []
     }
@@ -146,7 +145,13 @@ function handleDragEnd() {
 onMounted(() => {
   console.log(view);
   console.log(location)
-  document.title = book.title;
+  api.getBook(route.query.book).then(resp => {
+    console.log('book')
+    console.log(resp.data);
+    book.title = resp.data.data.title;
+    book.content = resp.data.data.pages;
+    document.title = book.title;
+  });
   if (route.query.url) {
     view._value.src = route.query.url;
   }
@@ -156,7 +161,7 @@ const clickNode = (node: TreeNode) => {
   console.log(view);
   if (node.url) {
     view._value.src = node.url;
-    router.push({path: route.path, query: {url: node.url}})
+    router.push({ path: route.path, query: { ...route.query, url: node.url } })
     console.log(route.query)
   }
 }

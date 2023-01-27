@@ -20,7 +20,6 @@
 </template>
 <script>
 import splitPane from "vue3-splitpane";
-import works from "../assets/我在晚清搞洋务.json";
 
 export default {
   components: {
@@ -28,7 +27,7 @@ export default {
   },
   data() {
     return {
-      works,
+      works:[],
     }
   },
   mounted() {

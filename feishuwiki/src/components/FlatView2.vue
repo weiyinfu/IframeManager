@@ -1,18 +1,17 @@
 <template>
   <el-tabs tab-position="left" class="FlatView2">
     <el-tab-pane v-for="i in works.pages" :label="i.name" :key="i.name">
-      <iframe :src="i.url"></iframe>
+      <keep-alive>
+        <iframe :src="i.url"></iframe>
+      </keep-alive>
     </el-tab-pane>
   </el-tabs>
 </template>
-<script>
-// import works from "../assets/mywork.json";
-import works from "../assets/我在晚清搞洋务.json";
-
+<script> 
 export default {
   data() {
     return {
-      works,
+      works:[],
     }
   }
 }
@@ -27,7 +26,8 @@ export default {
     height: 100%;
   }
 
-  .el-tabs__content, .el-tabs__content .el-tab-pane {
+  .el-tabs__content,
+  .el-tabs__content .el-tab-pane {
     height: 100%;
   }
 
