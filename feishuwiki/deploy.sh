@@ -1,2 +1,2 @@
 yarn build
-rsync -r dist dev:~/mypy3/PicoPages/FeishuWiki/
+rsync -r dist dev:~/mypy3/MyStatic/FeishuWiki/

@@ -174,7 +174,7 @@ const clickNode = (node: TreeNode) => {
   .splitter-pane {
     height: 100%;
     overflow: auto;
-    scrollbar-color: black red;
+    //scrollbar-color: black red;
 
     &.splitter-paneR {
       overflow: hidden;
